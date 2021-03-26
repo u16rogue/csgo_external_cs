@@ -60,6 +60,7 @@ namespace csgo_external_cs.Hacks
                         if (GlowWhenDead && PlayerAlive)
                             continue;
 
+                        // TODO: fix health calc
                         Utils.GlowObjectManager.ApplyGlow(Utils.GlowObjectManager.GetObject(Utils.Entity.GetGlowIndex(Entity)), (GlowModeEnemy == 1 ? new float[] { 1, 0, 0, 1 } : new float[] { 1 - EntityHealth / 100, EntityHealth / 100, 0, 1 }));
                     }
                     else if (GlowTeam && EntityTeam == LocalTeam)

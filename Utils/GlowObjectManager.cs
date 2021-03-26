@@ -9,27 +9,31 @@ namespace csgo_external_cs.Utils
 		public static readonly int END_OF_FREE_LIST = -1;
 		public static readonly int ENTRY_IN_USE     = -2;
 		public static readonly int GlowObjectByteSize = Marshal.SizeOf(typeof(GlowObject));
-
-		// ps. offsets are wrong... will fix in the future!
-		[StructLayout(LayoutKind.Sequential, Pack = 0)]
-		public struct GlowObject
+		
+		public static class Offset
         {
-			IntPtr m_pEntity; // 0
-			float  m_vGlowColor_R; // 4
-			float  m_vGlowColor_G; // 8
-			float  m_vGlowColor_B; // 12
-			float  m_flGlowAlpha; // 16
-			byte   m_bGlowAlphaCappedByRenderAlpha; // 20
-			float  m_flGlowAlphaFunctionOfMaxVelocity; // 21
-			float  m_flGlowAlphaMax; // 25
-			float  m_flGlowPulseOverdrive; // 29
-			byte   m_bRenderWhenOccluded; // 33
-			byte   m_bRenderWhenUnoccluded; // 34
-			byte   m_bFullBloomRender; // 35
-			int    m_nFullBloomStencilTestValue; // 36
-			int    m_nRenderStyle; // 40
-			int    m_nSplitScreenSlot; // 44
-			int    m_nNextFreeSlot; // 48
+			public static readonly int m_vGlowColorRGBA        = (int)Marshal.OffsetOf(typeof(GlowObject), "m_vGlowColorRGBA");
+			public static readonly int m_bRenderWhenOccluded   = (int)Marshal.OffsetOf(typeof(GlowObject), "m_bRenderWhenOccluded");
+			public static readonly int m_bRenderWhenUnoccluded = (int)Marshal.OffsetOf(typeof(GlowObject), "m_bRenderWhenUnoccluded");
+			public static readonly int m_nRenderStyle          = (int)Marshal.OffsetOf(typeof(GlowObject), "m_nRenderStyle");
+		}
+		
+		[StructLayout(LayoutKind.Sequential, Pack = 0)]
+		public unsafe struct GlowObject // Ignore error
+        {
+			IntPtr      m_pEntity;
+            fixed float m_vGlowColorRGBA[4];
+			byte        m_bGlowAlphaCappedByRenderAlpha;
+			float       m_flGlowAlphaFunctionOfMaxVelocity;
+			float       m_flGlowAlphaMax;
+			float       m_flGlowPulseOverdrive;
+			byte        m_bRenderWhenOccluded;
+			byte        m_bRenderWhenUnoccluded;
+			byte        m_bFullBloomRender;
+			int         m_nFullBloomStencilTestValue;
+			int         m_nRenderStyle;
+			int         m_nSplitScreenSlot;
+			int         m_nNextFreeSlot;
 		}
 
         public static IntPtr GetObject(int Index)
@@ -53,12 +57,11 @@ namespace csgo_external_cs.Utils
 				BitConverter.GetBytes(Color[3]),
 			};
 
-			for (int i = 4; i < 20; i++)
+			for (int i = Offset.m_vGlowColorRGBA; i < 20; i++)
 				Obj[i] = BytesColor[i / 4 - 1][i % 4];
 
-			Obj[36] = 1;
-			//Obj[37] = 1;
-			Obj[44] = 0;
+			Obj[Offset.m_bRenderWhenOccluded] = 1;
+			Obj[Offset.m_nRenderStyle] = 0;
 
 			PInvoke.kernel32.WriteProcessMemory(CSGO.Handle, GlowObjectBase, Obj, GlowObjectByteSize, IntPtr.Zero);
 		}

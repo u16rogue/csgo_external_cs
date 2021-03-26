@@ -174,7 +174,7 @@ namespace csgo_external_cs
                 return false;
 
             // TODO: find proper sig
-            Program.Log("\n\t>> m_bSpotted (HARDCODED) = " + CSGO.Offsets.m_bSpotted.ToString("X"));
+            Program.Log("\n\t>> m_bSpotted (HARDCODED) = 0x" + CSGO.Offsets.m_bSpotted.ToString("X"));
 
             Program.Log("\n\t>> m_iGlowIndex = ");
             CSGO.Offsets.m_iGlowIndex = (int)CSGO.Modules.Client.PatternScan(new byte[] { 0x8B, 0xB3, 0x00, 0x00, 0x00, 0x00, 0xE8, 0x00, 0x00, 0x00, 0x00, 0x8A }, "xx????x????x", 0x2, true);
