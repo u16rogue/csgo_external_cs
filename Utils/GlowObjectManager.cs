@@ -6,10 +6,11 @@ namespace csgo_external_cs.Utils
 {
     public static class GlowObjectManager
     {
-		public static readonly int END_OF_FREE_LIST = -1;
-		public static readonly int ENTRY_IN_USE     = -2;
-		public static readonly int GlowObjectByteSize = Marshal.SizeOf(typeof(GlowObject));
-		
+		public static readonly int END_OF_FREE_LIST      = -1;
+		public static readonly int ENTRY_IN_USE          = -2;
+		public static readonly int GlowObjectByt_Size    = Marshal.SizeOf(typeof(GlowObject));
+		public static readonly int m_vGlowColorRGBA_Size = 20;
+
 		public static class Offset
         {
 			public static readonly int m_vGlowColorRGBA        = (int)Marshal.OffsetOf(typeof(GlowObject), "m_vGlowColorRGBA");
@@ -40,13 +41,13 @@ namespace csgo_external_cs.Utils
         {
 			byte[] m_pMemory = new byte[4];
 			PInvoke.kernel32.ReadProcessMemory(CSGO.Handle, CSGO.Values.dwGlowObjectManager, m_pMemory, 4, IntPtr.Zero);
-			return m_pMemory.ToIntPtr() + (Index * GlowObjectByteSize);
+			return m_pMemory.ToIntPtr() + (Index * GlowObjectByt_Size);
         }
 
 		public static void ApplyGlow(IntPtr GlowObjectBase, float[] Color)
         {
-			byte[] Obj = new byte[GlowObjectByteSize];
-			PInvoke.kernel32.ReadProcessMemory(CSGO.Handle, GlowObjectBase, Obj, GlowObjectByteSize, IntPtr.Zero);
+			byte[] Obj = new byte[GlowObjectByt_Size];
+			PInvoke.kernel32.ReadProcessMemory(CSGO.Handle, GlowObjectBase, Obj, GlowObjectByt_Size, IntPtr.Zero);
 
 			// very inefficient, will optimize later
 			byte[][] BytesColor = new byte[][]
@@ -56,14 +57,14 @@ namespace csgo_external_cs.Utils
 				BitConverter.GetBytes(Color[2]),
 				BitConverter.GetBytes(Color[3]),
 			};
-
-			for (int i = Offset.m_vGlowColorRGBA; i < 20; i++)
+			
+			for (int i = Offset.m_vGlowColorRGBA; i < m_vGlowColorRGBA_Size; i++)
 				Obj[i] = BytesColor[i / 4 - 1][i % 4];
 
 			Obj[Offset.m_bRenderWhenOccluded] = 1;
 			Obj[Offset.m_nRenderStyle] = 0;
 
-			PInvoke.kernel32.WriteProcessMemory(CSGO.Handle, GlowObjectBase, Obj, GlowObjectByteSize, IntPtr.Zero);
+			PInvoke.kernel32.WriteProcessMemory(CSGO.Handle, GlowObjectBase, Obj, GlowObjectByt_Size, IntPtr.Zero);
 		}
     }
 }

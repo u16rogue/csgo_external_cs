@@ -27,6 +27,7 @@ namespace csgo_external_cs.Hacks
         public bool GlowTeam =  false;
 
         public int  GlowModeEnemy = 0;
+        public int GlowModeTeam = 1;
         public bool GlowWhenDead = false;
 
         private void RunEngineGlow()
@@ -55,18 +56,25 @@ namespace csgo_external_cs.Hacks
 
                     int EntityTeam = Utils.Entity.GetTeam(Entity);
 
+                    float[] GlowColor = null;
+
                     if (GlowEnemy && EntityTeam != LocalTeam)
                     {
                         if (GlowWhenDead && PlayerAlive)
                             continue;
-
-                        // TODO: fix health calc
-                        Utils.GlowObjectManager.ApplyGlow(Utils.GlowObjectManager.GetObject(Utils.Entity.GetGlowIndex(Entity)), (GlowModeEnemy == 1 ? new float[] { 1, 0, 0, 1 } : new float[] { 1 - EntityHealth / 100, EntityHealth / 100, 0, 1 }));
+                    
+                        GlowColor = (GlowModeEnemy == 1 ? new float[] { 1, 0, 0, 1 } : new float[] { (float)1.0 - (float)EntityHealth / 100, (float)EntityHealth / 100, 0, 1 });
                     }
                     else if (GlowTeam && EntityTeam == LocalTeam)
                     {
-                        Utils.GlowObjectManager.ApplyGlow(Utils.GlowObjectManager.GetObject(Utils.Entity.GetGlowIndex(Entity)), new float[] { 0, 0, 1, 1 });
+                        GlowColor = (GlowModeTeam == 1 ? new float[] { 0, 0, 1, 1 } : new float[] { (float)1.0 - (float)EntityHealth / 100, (float)EntityHealth / 100, 0, 1 });
                     }
+                    else
+                    {
+                        continue;
+                    }
+
+                    Utils.GlowObjectManager.ApplyGlow(Utils.GlowObjectManager.GetObject(Utils.Entity.GetGlowIndex(Entity)), GlowColor);
                 }
             }
         }

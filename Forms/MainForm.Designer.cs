@@ -259,6 +259,7 @@ namespace csgo_external_cs.Forms
             this.cboxTeamColor.Name = "cboxTeamColor";
             this.cboxTeamColor.Size = new System.Drawing.Size(312, 21);
             this.cboxTeamColor.TabIndex = 14;
+            this.cboxTeamColor.SelectedIndexChanged += new System.EventHandler(this.cboxTeamColor_SelectedIndexChanged);
             // 
             // cboxEnemyColor
             // 

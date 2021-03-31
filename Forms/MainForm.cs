@@ -82,5 +82,10 @@ namespace csgo_external_cs.Forms
         {
             Hacks.EngineGlow.Instance.GlowModeEnemy = cboxEnemyColor.SelectedIndex;
         }
+
+        private void cboxTeamColor_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Hacks.EngineGlow.Instance.GlowModeTeam = cboxTeamColor.SelectedIndex;
+        }
     }
 }
