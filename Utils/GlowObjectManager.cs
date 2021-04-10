@@ -8,7 +8,7 @@ namespace csgo_external_cs.Utils
     {
 		public static readonly int END_OF_FREE_LIST      = -1;
 		public static readonly int ENTRY_IN_USE          = -2;
-		public static readonly int GlowObjectByt_Size    = Marshal.SizeOf(typeof(GlowObject));
+		public static readonly int GlowObjectByte_Size   = Marshal.SizeOf(typeof(GlowObject));
 		public static readonly int m_vGlowColorRGBA_Size = 20;
 
 		public static class Offset
